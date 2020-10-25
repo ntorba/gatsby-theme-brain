@@ -19,30 +19,29 @@ module.exports = (pluginOptions) => {
     ".md",
     ".mdx",
   ];
-  let exclusions =
-    (pluginOptions.exclude && pluginOptions.exclude.map(toRegExp)) || [];
 
-  let filenames = fs.readdirSync(notesDirectory);
+  let nodes = [];
 
-  return filenames
-    .filter((filename) => {
-      return notesFileExtensions.includes(path.extname(filename).toLowerCase());
-    })
+  const recursive = directory => fs.readdirSync(directory)
     .filter(doesNotMatchAny(exclusions))
-    .map((filename) => {
-      let slug = pluginOptions.generateSlug
-        ? pluginOptions.generateSlug(filename)
-        : generateSlug(path.parse(filename).name);
-
-      let fullPath = notesDirectory + filename;
-
-      let rawFile = fs.readFileSync(fullPath, "utf-8");
-
-      return {
-        filename: filename,
-        fullPath: fullPath,
-        slug: slug,
-        rawFile: rawFile,
-      };
+    .map(filename => {
+    let slug = pluginOptions.generateSlug
+      ? pluginOptions.generateSlug(filename)
+      : generateSlug(path.parse(filename).name);
+      let fullPath = path.join(directory, filename);
+      console.log("FULLPATH = ", fullPath);
+      if (fs.lstatSync(fullPath).isDirectory()) {
+          recursive(fullPath)
+      }else if (notesFileExtensions.includes(path.extname(filename).toLowerCase())){
+          let rawFile = fs.readFileSync(fullPath, "utf-8");
+          nodes.push({
+              filename: filename,
+              fullPath: fullPath,
+              slug: slug,
+              rawFile: rawFile,
+          });
+      }
     });
+  recursive(notesDirectory);
+  return nodes;
 };
