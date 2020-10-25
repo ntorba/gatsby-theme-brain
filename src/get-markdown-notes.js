@@ -43,5 +43,7 @@ module.exports = (pluginOptions) => {
       }
     });
   recursive(notesDirectory);
+  console.log("NODES");
+  console.log(nodes);
   return nodes;
 };
