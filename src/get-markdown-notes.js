@@ -31,7 +31,6 @@ module.exports = (pluginOptions) => {
       ? pluginOptions.generateSlug(filename)
       : generateSlug(path.parse(filename).name);
     let fullPath = path.join(directory, filename);
-    console.log("FULLPATH = ", fullPath);
     if (fs.lstatSync(fullPath).isDirectory()) {
         recursive(fullPath)
     }else if (notesFileExtensions.includes(path.extname(filename).toLowerCase())){
