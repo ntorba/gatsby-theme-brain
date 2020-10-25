@@ -30,22 +30,20 @@ module.exports = (pluginOptions) => {
     let slug = pluginOptions.generateSlug
       ? pluginOptions.generateSlug(filename)
       : generateSlug(path.parse(filename).name);
-      let fullPath = path.join(directory, filename);
-      console.log("FULLPATH = ", fullPath);
-      if (fs.lstatSync(fullPath).isDirectory()) {
-          recursive(fullPath)
-      }else if (notesFileExtensions.includes(path.extname(filename).toLowerCase())){
-          let rawFile = fs.readFileSync(fullPath, "utf-8");
-          nodes.push({
-              filename: filename,
-              fullPath: fullPath,
-              slug: slug,
-              rawFile: rawFile,
-          });
-      }
-    });
+    let fullPath = path.join(directory, filename);
+    console.log("FULLPATH = ", fullPath);
+    if (fs.lstatSync(fullPath).isDirectory()) {
+        recursive(fullPath)
+    }else if (notesFileExtensions.includes(path.extname(filename).toLowerCase())){
+        let rawFile = fs.readFileSync(fullPath, "utf-8");
+        nodes.push({
+            filename: filename,
+            fullPath: fullPath,
+            slug: slug,
+            rawFile: rawFile,
+        });
+    }
+  });
   recursive(notesDirectory);
-  console.log("NODES");
-  console.log(nodes.map(obj=> {return obj[fullPath]}));
   return nodes;
 };
