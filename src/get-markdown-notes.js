@@ -19,6 +19,8 @@ module.exports = (pluginOptions) => {
     ".md",
     ".mdx",
   ];
+  let exclusions =
+    (pluginOptions.exclude && pluginOptions.exclude.map(toRegExp)) || [];
 
   let nodes = [];
 
@@ -44,6 +46,6 @@ module.exports = (pluginOptions) => {
     });
   recursive(notesDirectory);
   console.log("NODES");
-  console.log(nodes);
+  console.log(nodes.map(obj=> {return obj[fullPath]}));
   return nodes;
 };
